@@ -1,0 +1,102 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum NotificationStatus {
+  UNSEEN
+  SEEN
+}
+
+enum NotificationType {
+  FRIENDREQUEST_NOTIFY
+  SYSTEM_NOTIFY
+  TAG_NOTIFY
+  COMMENT_NOTIFY
+  REACT_NOTIFY
+  CHAT_NOTIFY
+  GROUP_NOTIFY
+}
+
+model User {
+  id            Int            @id @default(autoincrement())
+  email         String         @unique
+  firstname     String
+  surname       String
+  password      String
+  dateOfBirth   DateTime?
+  avatar        String?
+  gender        Gender
+  posts         Post[]
+  comments      Comment[]
+  chats         ChatMessage[]
+  notifications Notification[]
+  friends       User[]         @relation("Friends")
+  friendsOf     User[]         @relation("Friends")
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime?      @updatedAt
+}
+
+model Post {
+  id            Int            @id @default(autoincrement())
+  content       String
+  file          String[]
+  comments      Comment[]
+  author        User           @relation(fields: [authorId], references: [id])
+  authorId      Int
+  notifications Notification[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime?      @updatedAt
+}
+
+model Comment {
+  id            Int       @id @default(autoincrement())
+  content       String
+  author        User      @relation(fields: [authorId], references: [id])
+  authorId      Int
+  post          Post      @relation(fields: [postId], references: [id])
+  postId        Int
+  parent        Comment?  @relation("ChildComments", fields: [parentId], references: [id])
+  parentId      Int?
+  childComments Comment[] @relation("ChildComments")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model ChatMessage {
+  id        Int       @id @default(autoincrement())
+  roomId    String?
+  content   String
+  sender    User      @relation(fields: [senderId], references: [id])
+  senderId  Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+}
+
+model Notification {
+  id         Int                @id @default(autoincrement())
+  content    String
+  sender     User               @relation(fields: [senderId], references: [id])
+  senderId   Int
+  receiverId Int
+  status     NotificationStatus @default(UNSEEN)
+  post       Post?              @relation(fields: [postId], references: [id])
+  postId     Int?
+  type       NotificationType
+  createdAt  DateTime           @default(now())
+  updatedAt  DateTime?          @updatedAt
+}
