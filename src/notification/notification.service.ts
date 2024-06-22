@@ -61,4 +61,28 @@ export class NotificationService {
     });
     return listNotification;
   }
+
+  async NotificationFriendRequest(
+    notificationInfo: NotificationInfo,
+  ): Promise<Notification> {
+    return await this.prismaService.notification.create({
+      data: {
+        ...notificationInfo,
+        type: 'FRIENDREQUEST_NOTIFY',
+        content: 'vừa gửi lời mời kết bạn cho bạn',
+      },
+      include: {
+        sender: {
+          select: { firstname: true, surname: true, id: true, avatar: true },
+        },
+      },
+    });
+  }
+
+  async notify(NotificationInfo): Promise<Notification> {
+    if (NotificationInfo.type === 'COMMENT_NOTIFY')
+      return this.notifyWhenCommentOnPost(NotificationInfo);
+    else if (NotificationInfo.type === 'FRIENDREQUEST_NOTIFY')
+      return this.NotificationFriendRequest(NotificationInfo);
+  }
 }

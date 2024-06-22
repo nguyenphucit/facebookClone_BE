@@ -27,6 +27,18 @@ export class PostsService {
           {
             content: { contains: search },
           },
+          {
+            author: {
+              OR: [
+                {
+                  surname: { contains: search, mode: 'insensitive' },
+                },
+                {
+                  firstname: { contains: search, mode: 'insensitive' },
+                },
+              ],
+            },
+          },
         ],
       },
       take: items_per_pages,

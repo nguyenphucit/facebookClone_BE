@@ -13,7 +13,6 @@ export class UserService {
   async getAllUser(
     params: UserFilterType,
   ): Promise<UserPaginationResponseType> {
-    console.log(params);
     const items_per_pages = params.items_per_pages || 10;
     const page = Number(params.page) || 1;
     const search = params.search || '';
@@ -22,10 +21,10 @@ export class UserService {
       where: {
         OR: [
           {
-            surname: { contains: search },
+            surname: { contains: search, mode: 'insensitive' },
           },
           {
-            firstname: { contains: search },
+            firstname: { contains: search, mode: 'insensitive' },
           },
         ],
       },
@@ -36,6 +35,14 @@ export class UserService {
           createdAt: 'desc',
         },
       ],
+      include: {
+        friends: {
+          select: {
+            avatar: true,
+            id: true,
+          },
+        },
+      },
     });
     const sanitizedData = data.map((user) => {
       const password = '';

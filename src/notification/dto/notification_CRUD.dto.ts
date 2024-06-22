@@ -8,5 +8,15 @@ export class NotificationInfo {
   @IsNumber()
   receiverId: number;
 
+  @IsNotEmpty()
+  type:
+    | 'FRIENDREQUEST_NOTIFY'
+    | 'SYSTEM_NOTIFY'
+    | 'TAG_NOTIFY'
+    | 'COMMENT_NOTIFY'
+    | 'REACT_NOTIFY'
+    | 'CHAT_NOTIFY'
+    | 'GROUP_NOTIFY';
+
   postId: number;
 }

@@ -28,7 +28,7 @@ export class NotificationGateway
   ) {
     this.server.emit(
       'notification',
-      await this.notificationService.notifyWhenCommentOnPost(notification),
+      await this.notificationService.notify(notification),
     );
   }
 
