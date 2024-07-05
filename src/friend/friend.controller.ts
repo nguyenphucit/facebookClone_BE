@@ -14,7 +14,9 @@ export class FriendController {
   constructor(private readonly friendService: FriendService) {}
 
   @Get(':id')
-  getFriendsByUserId(@Param('id', ParseIntPipe) userId: number): Promise<any> {
+  getFriendsByUserId(
+    @Param('id', ParseIntPipe) userId: number,
+  ): Promise<friendListReturnDTO> {
     return this.friendService.getFriendsById(userId);
   }
 

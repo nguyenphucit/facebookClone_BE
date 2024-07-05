@@ -11,13 +11,13 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
-import { Post as PostModel } from '@prisma/client';
 import {
   PostFilterType,
   PostPaginationResponseType,
   createPostDTO,
 } from './dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Post as PostModel } from '@prisma/client';
 @Controller('posts')
 export class PostsController {
   constructor(private readonly postService: PostsService) {}
@@ -28,7 +28,9 @@ export class PostsController {
     return this.postService.getPostsRandomly(params);
   }
   @Get('/by-user')
-  getAllPostByUserId(@Query('userId', ParseIntPipe) userId: number) {
+  getAllPostByUserId(
+    @Query('userId', ParseIntPipe) userId: number,
+  ): Promise<PostModel[]> {
     return this.postService.getPostByUserId(userId);
   }
 

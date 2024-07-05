@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserFilterType, UserPaginationResponseType } from './dtos/getUserDTO';
+import { contains } from 'class-validator';
 
 @Injectable()
 export class UserService {
@@ -21,10 +22,16 @@ export class UserService {
       where: {
         OR: [
           {
-            surname: { contains: search, mode: 'insensitive' },
+            surname: {
+              contains: search,
+              mode: 'insensitive',
+            },
           },
           {
-            firstname: { contains: search, mode: 'insensitive' },
+            firstname: {
+              contains: search,
+              mode: 'insensitive',
+            },
           },
         ],
       },

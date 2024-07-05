@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { friendListReturnDTO } from './dto';
+import { friend, friendListReturnDTO } from './dto';
 
 @Injectable()
 export class FriendService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async getFriendsById(userId: number): Promise<any> {
-    const friendListInfo = await this.prismaService.user.findUnique({
+  async getFriendsById(userId: number): Promise<friendListReturnDTO> {
+    const friends = await this.prismaService.user.findUnique({
       where: { id: userId },
       include: {
         friends: {
@@ -15,10 +15,17 @@ export class FriendService {
         },
       },
     });
-    return friendListInfo?.friends || [];
+    const friendList: friend[] = friends.friends.map((friend) => ({
+      id: friend.id,
+      firstname: friend.firstname,
+      surname: friend.surname,
+      avatar: friend.avatar ?? '', // Handle null avatar if necessary
+    }));
+
+    return { friendList };
   }
 
-  async addFriendById(userId: number, addId: number): Promise<any> {
+  async addFriendById(userId: number, addId: number) {
     const friend = await this.prismaService.user.findUnique({
       where: { id: addId },
       include: { friends: true },
@@ -32,7 +39,7 @@ export class FriendService {
       where: { id: addId },
       include: { friends: true },
     });
-    return await this.prismaService.user.update({
+    await this.prismaService.user.update({
       data: { friends: { connect: { id: friend.id } } },
       where: { id: userId },
       include: { friends: true },

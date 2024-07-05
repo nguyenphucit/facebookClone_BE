@@ -8,3 +8,20 @@ export class sendMessage {
   @IsNotEmpty()
   roomId: string;
 }
+
+interface Sender {
+  id: number;
+  firstname: string;
+  surname: string;
+  avatar: string | null;
+}
+
+export interface MessageFromRoom {
+  id: number;
+  roomId: string;
+  content: string;
+  senderId: number;
+  createdAt: Date;
+  updatedAt: Date;
+  sender: Sender;
+}

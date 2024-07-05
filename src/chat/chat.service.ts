@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ChatMessage } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { sendMessage } from './dto/chatCRUD.dto';
+import { MessageFromRoom, sendMessage } from './dto/chatCRUD.dto';
 
 @Injectable()
 export class ChatService {
@@ -23,7 +23,7 @@ export class ChatService {
     return chatInfo;
   }
 
-  async getChatFromRoomId(roomId: string): Promise<any> {
+  async getChatFromRoomId(roomId: string): Promise<MessageFromRoom[]> {
     const chatMessages = await this.prismaService.chatMessage.findMany({
       where: { roomId: roomId },
       include: {

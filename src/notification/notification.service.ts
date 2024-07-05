@@ -8,7 +8,7 @@ export class NotificationService {
 
   async notifyWhenCommentOnPost(
     notificationInfo: NotificationInfo,
-  ): Promise<any> {
+  ): Promise<Notification> {
     return await this.prismaService.notification.create({
       data: {
         ...notificationInfo,
@@ -32,7 +32,9 @@ export class NotificationService {
     });
     return updatedResult.count !== 0;
   }
-  async notifyGetChatMessage(notificationInfo: NotificationInfo): Promise<any> {
+  async notifyGetChatMessage(
+    notificationInfo: NotificationInfo,
+  ): Promise<Notification> {
     return await this.prismaService.notification.create({
       data: {
         ...notificationInfo,
