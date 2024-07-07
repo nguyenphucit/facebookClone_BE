@@ -11,7 +11,7 @@ import { Server, Socket } from 'socket.io';
 import { NotificationService } from './notification.service';
 import { NotificationInfo } from './dto';
 import { promises } from 'dns';
-@WebSocketGateway(8001, { cors: '*' })
+@WebSocketGateway({ cors: '*' })
 @Injectable()
 export class NotificationGateway
   implements OnGatewayConnection, OnGatewayDisconnect
