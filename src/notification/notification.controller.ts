@@ -1,4 +1,11 @@
-import { Controller, Get, ParseIntPipe, Param, Put } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  ParseIntPipe,
+  Param,
+  Put,
+  Delete,
+} from '@nestjs/common';
 import { NotificationService } from './notification.service';
 import { Notification } from '@prisma/client';
 
@@ -17,5 +24,12 @@ export class NotificationController {
     @Param('userId', ParseIntPipe) userId: number,
   ): Promise<Boolean> {
     return this.notificationService.updateNotificationStatus(userId);
+  }
+
+  @Delete(':notificationId')
+  deleteNotificationById(
+    @Param('notificationId', ParseIntPipe) notificationId: number,
+  ) {
+    return this.notificationService.deleteNotificationById(notificationId);
   }
 }

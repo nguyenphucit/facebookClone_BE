@@ -81,10 +81,16 @@ export class NotificationService {
     });
   }
 
-  async notify(NotificationInfo): Promise<Notification> {
+  async notify(NotificationInfo: NotificationInfo): Promise<Notification> {
     if (NotificationInfo.type === 'COMMENT_NOTIFY')
       return this.notifyWhenCommentOnPost(NotificationInfo);
     else if (NotificationInfo.type === 'FRIENDREQUEST_NOTIFY')
       return this.NotificationFriendRequest(NotificationInfo);
+  }
+
+  async deleteNotificationById(notificationId: number) {
+    await this.prismaService.notification.delete({
+      where: { id: notificationId },
+    });
   }
 }

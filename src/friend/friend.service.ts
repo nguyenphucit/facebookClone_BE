@@ -45,4 +45,19 @@ export class FriendService {
       include: { friends: true },
     });
   }
+
+  async getMutualFriend(userId: number, friendId: number): Promise<any> {
+    const userFriends = await this.prismaService.user.findUnique({
+      where: { id: userId },
+      include: { friends: { select: { id: true, avatar: true } } },
+    });
+    const friend_Friends = await this.prismaService.user.findUnique({
+      where: { id: friendId },
+      include: { friends: { select: { id: true, avatar: true } } },
+    });
+    const response = userFriends.friends.filter((friend) =>
+      friend_Friends.friends.some((item) => item.id === friend.id),
+    );
+    return response;
+  }
 }

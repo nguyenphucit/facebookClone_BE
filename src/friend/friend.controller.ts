@@ -20,6 +20,13 @@ export class FriendController {
     return this.friendService.getFriendsById(userId);
   }
 
+  @Get('mutualFriend/:userId')
+  getMutualFriend(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Query('friendId', ParseIntPipe) friendId: number,
+  ) {
+    return this.friendService.getMutualFriend(userId, friendId);
+  }
   @Post('/add/:userId')
   addFriendByUserId(
     @Param('userId', ParseIntPipe) userId: number,

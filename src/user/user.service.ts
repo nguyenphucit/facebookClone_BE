@@ -69,6 +69,14 @@ export class UserService {
   async getUserById(userId: number): Promise<any> {
     const response = this.prismaService.user.findUnique({
       where: { id: userId },
+      include: {
+        friends: {
+          select: {
+            avatar: true,
+            id: true,
+          },
+        },
+      },
     });
     delete response['password'];
     return response;
