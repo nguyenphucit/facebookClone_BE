@@ -1,4 +1,11 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Put,
+  Query,
+} from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { MessageFromRoom } from './dto/chatCRUD.dto';
 import { ChatMessage } from '@prisma/client';
@@ -19,5 +26,19 @@ export class ChatController {
     @Param('userId') userId: number,
   ): Promise<ChatMessage[]> {
     return await this.chatService.getAllLastestMessageByUserId(userId);
+  }
+
+  @Put('/updateStatus/:userId')
+  updateNotificationStatus(
+    @Param('userId', ParseIntPipe) userId: number,
+  ): Promise<Boolean> {
+    return this.chatService.updateChatMessageStatus(userId);
+  }
+
+  @Put('/updateStatusByRoomId/:roomId')
+  updateNotificationStatusByRoomId(
+    @Param('roomId') roomId: string,
+  ): Promise<Boolean> {
+    return this.chatService.updateChatMessageStatusByRoomId(roomId);
   }
 }

@@ -82,10 +82,13 @@ export class NotificationService {
   }
 
   async notify(NotificationInfo: NotificationInfo): Promise<Notification> {
+    console.log(NotificationInfo);
     if (NotificationInfo.type === 'COMMENT_NOTIFY')
       return this.notifyWhenCommentOnPost(NotificationInfo);
     else if (NotificationInfo.type === 'FRIENDREQUEST_NOTIFY')
       return this.NotificationFriendRequest(NotificationInfo);
+    else if (NotificationInfo.type === 'CHAT_NOTIFY')
+      return this.notifyGetChatMessage(NotificationInfo);
   }
 
   async deleteNotificationById(notificationId: number) {

@@ -11,7 +11,6 @@ import { Injectable, ValidationPipe } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { Server, Socket } from 'socket.io';
 import { sendMessage } from './dto/chatCRUD.dto';
-import { ChatMessage } from '@prisma/client';
 @WebSocketGateway({ cors: '*' })
 @Injectable()
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {

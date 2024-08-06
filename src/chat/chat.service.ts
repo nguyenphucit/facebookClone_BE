@@ -37,6 +37,9 @@ export class ChatService {
           },
         },
       },
+      orderBy: {
+        createdAt: 'asc',
+      },
     });
     return chatMessages;
   }
@@ -58,5 +61,30 @@ export class ChatService {
       }),
     );
     return latestMessages;
+  }
+
+  async updateChatMessageStatus(userId: number) {
+    const updatedResult = await this.prismaService.chatMessage.updateMany({
+      data: { status: 'SEEN' },
+      where: {
+        status: 'UNSEEN',
+        roomId: {
+          contains: userId.toString(),
+          mode: 'insensitive', // Optional: if you want a case-insensitive search
+        },
+      },
+    });
+    return updatedResult.count !== 0;
+  }
+
+  async updateChatMessageStatusByRoomId(roomId: string) {
+    const updatedResult = await this.prismaService.chatMessage.updateMany({
+      data: { status: 'SEEN' },
+      where: {
+        status: 'UNSEEN',
+        roomId: roomId,
+      },
+    });
+    return updatedResult.count !== 0;
   }
 }
