@@ -1,0 +1,37 @@
+services:
+  postgres:
+    image: postgres:15
+    networks:
+      - facebookDocker
+    environment:
+      POSTGRES_PASSWORD: phuc142002
+      POSTGRES_USER: phuc
+      POSTGRES_DB: facebook
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U phuc"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 5s
+
+  facebook_be:
+    build: ./
+    networks:
+      - facebookDocker
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./product-service/src:/usr/src/app/src
+    environment:
+      POSTGRES_PASSWORD: phuc142002
+      POSTGRES_USER: phuc
+      POSTGRES_DB: facebook
+      DATABASE_URL: postgresql://phuc:phuc142002@postgres:5432/facebook?schema=public
+      CLOUDINARY_NAME: facebookCloud
+      CLOUDINARY_API_KEY: 884562247879343
+      CLOUDINARY_API_SECRET: JNPek6zSg1Jqf9l7a_ofU-OtGLg
+    command: ["sh", "/usr/app/start.sh"]
+networks:
+  facebookDocker:
+    driver: bridge

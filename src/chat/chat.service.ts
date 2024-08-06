@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ChatMessage } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { MessageFromRoom, sendMessage } from './dto/chatCRUD.dto';
+import { groupBy } from 'rxjs';
 
 @Injectable()
 export class ChatService {
@@ -38,5 +39,24 @@ export class ChatService {
       },
     });
     return chatMessages;
+  }
+
+  async getAllLastestMessageByUserId(userId: number): Promise<ChatMessage[]> {
+    const roomIds = await this.prismaService.chatMessage.groupBy({
+      by: ['roomId'],
+      where: {
+        roomId: { contains: userId.toString() },
+      },
+    });
+    const latestMessages = await Promise.all(
+      roomIds.map(async (roomId) => {
+        return this.prismaService.chatMessage.findFirst({
+          where: { roomId: roomId.roomId },
+          orderBy: { createdAt: 'desc' },
+          take: 1, // Lấy tin nhắn mới nhất
+        });
+      }),
+    );
+    return latestMessages;
   }
 }
