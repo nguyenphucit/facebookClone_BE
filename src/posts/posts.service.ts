@@ -97,6 +97,7 @@ export class PostsService {
         createdAt: 'desc',
       },
       include: {
+        likes: { select: { authorId: true } },
         comments: {
           where: { parentId: null },
           select: {
