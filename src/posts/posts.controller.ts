@@ -5,6 +5,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Put,
   Query,
   UploadedFile,
   UseInterceptors,
@@ -41,5 +42,13 @@ export class PostsController {
     @UploadedFile() file?: Express.Multer.File,
   ): Promise<any> {
     return this.postService.createPost(postInfo, file);
+  }
+
+  @Post('/like/:postId')
+  async likePost(
+    @Param('postId', ParseIntPipe) postId: number,
+    @Query('userId', ParseIntPipe) userId: number,
+  ): Promise<number> {
+    return await this.postService.likePost(postId, userId);
   }
 }

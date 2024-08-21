@@ -55,6 +55,13 @@ model User {
   updatedAt     DateTime?      @updatedAt
 }
 
+model Like {
+  id       Int  @id @default(autoincrement())
+  authorId Int
+  postId   Int
+  post     Post @relation(fields: [postId], references: [id])
+}
+
 model Post {
   id            Int            @id @default(autoincrement())
   content       String
@@ -63,6 +70,7 @@ model Post {
   author        User           @relation(fields: [authorId], references: [id])
   authorId      Int
   notifications Notification[]
+  likes         Like[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime?      @updatedAt
 }

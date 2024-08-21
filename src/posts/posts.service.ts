@@ -47,6 +47,7 @@ export class PostsService {
         createdAt: 'desc',
       },
       include: {
+        likes: { select: { authorId: true } },
         comments: {
           where: { parentId: null },
           select: {
@@ -159,5 +160,26 @@ export class PostsService {
       where: { id: commentId },
     });
     return commentInfo;
+  }
+
+  async likePost(postId: number, userId: number) {
+    const likeExist = await this.prismaService.like.findFirst({
+      where: { postId: postId, authorId: userId },
+    });
+    const post = await this.prismaService.post.findUnique({
+      where: { id: postId },
+      include: { likes: true },
+    });
+    if (likeExist) {
+      await this.prismaService.like.delete({
+        where: { id: likeExist.id },
+      });
+      return 0;
+    }
+    const like = await this.prismaService.like.create({
+      data: { postId: postId, authorId: userId },
+    });
+    post.likes.push(like);
+    return 1;
   }
 }
